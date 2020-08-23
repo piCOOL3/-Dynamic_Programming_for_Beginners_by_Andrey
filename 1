@@ -1,0 +1,84 @@
+"""
+CLIMBING STAIRS  AT-MAX 3 STEPS at one time,
+
+Total ways to reach the Nth step, if we can jump 1 , 2 , 3 steps at a time.
+
+     3                     3                      3                        3 
+_______________   * _____________________ * ________________________ * ______________    = (3 ^ N) 
+
+
+objective function : calculate the total no of ways to reach Nth step.
+
+                     To reach Nth step , we need to make some jumps.  Njumps 
+
+                     NC1 + NC2 + NC3 + NC4 + NC5 --------NCN = (2^N)
+
+
+recurrance relation :  Count_ways(n) = Count_ways(n -1) + Count_ways(n -2) + Count_ways(n -3)
+
+base-cases  :       n = 0 --> Count_ways(0) = 1
+                    n = 1 --> Count_ways(1) = 1 
+                    n = 2 --> Count_ways(2) = 2
+
+order       :       bottom-up
+
+Where to find the answer : Count_ways(n)
+             
+"""
+"""
+CLIMBING STAIRS  AT-MAX K  STEPS at one time,
+
+Total ways to reach the Nth step, if we can jump 1 , 2 , 3 -----K  steps at a time.
+
+objective function : calculate the total no of ways to reach Nth step by making 1 ,2,3,4 ---- K jumps at one time.
+
+                     To reach Nth step , we need to make some jumps.  N jumps 
+
+Recurrance relation  : Count_ways(N - 1) + Count_ways(N - 2) + Count_ways(N - 3) ----- + Count_ways(N - k) 
+
+base case :       0 <= N <= k
+                       N > K
+
+ORDER : BOTTOM UP 
+
+Where to find the answer : Count_ways(N)
+"""
+"""
+space-optimized version. 
+In this approach, we use DP[] of size K instead of N .
+"""
+def Count_ways_space_optimized(total_steps , K): 
+   "this objective function will calculate the valid ways to reach the destination [total_steps] by taking at-most K steps at a time."
+   """ 
+   DP = [0] * (total_steps + 1)
+   DP[1] = 1
+   DP[2] = 2
+   DP[3] = 4
+   DP[4] =  [1,1,1,1] + [1+1+2],[1,2,1],[2,1,1] , [2+2] + [3,1],[1,3] , [4]
+                1                  3                1          2         1
+   """
+   DP = [0] * ( K + 1 )
+   DP[0] = 1
+   DP[1] = 1
+
+   for state in range(2,total_steps + 1 ,1):
+       "set the value for the current state."
+
+       previous_state = 1
+       "condition 1 : visit all k previous states from the current state  , 2. Previous state should exist "
+
+       while(previous_state  <= K ) and ((state - previous_state) >= 0 ):
+           "add the values from previous statesand store in the current state"
+           DP[state]+= DP[state - previous_state]
+           DP[state - previous_state] = DP[state - previous_state + 1]
+           previous_state+= 1
+
+
+   return DP[total_steps]
+
+total_steps = int(input("enter the total no of steps : "))
+maximum_possible_jump = int(input("enter the maximum possible jump at a time : "))
+Total_unique_ways = Count_ways_space_optimized(total_steps , maximum_possible_jump )
+print("total unique ways possible to jump from 0th step to "+ str(total_steps)+"th step is : "+str(Total_unique_ways))
+
+       
